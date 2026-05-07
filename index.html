@@ -189,6 +189,22 @@
     .guide-box h3 { color: var(--primary-dark); margin-bottom: 8px; }
     .guide-box ul { margin-left: 18px; color: #475467; }
 
+
+    .study-tip {
+      margin-top: 18px;
+      background: linear-gradient(135deg, #eff6ff, #faf5ff);
+      border: 1px solid #bfdbfe;
+      border-radius: 20px;
+      padding: 16px;
+      color: #334155;
+      line-height: 1.6;
+    }
+
+    .study-tip strong {
+      color: var(--primary-dark);
+    }
+
+
     .progress-area { margin-bottom: 22px; }
 
     .top-stats {
@@ -597,6 +613,12 @@
               <strong>Instant feedback</strong>
               Correct answers are clearly marked as correct.
             </div>
+          </div>
+
+
+          <div class="study-tip">
+            <strong>Study tip:</strong> Look for the structure first: <em>más que</em>, <em>menos que</em>, <em>tan como</em>,
+            <em>tanto/tanta/tantos/tantas</em>, or an <em>-ísimo</em> ending. The options are randomized every time you start.
           </div>
 
           <button class="btn-primary" id="startBtn">Start</button>
@@ -1442,7 +1464,13 @@
     }
 
     function startQuiz() {
-      questions = shuffleArray(originalQuestions);
+      questions = shuffleArray(originalQuestions).map(question => {
+        const copy = { ...question };
+        if (copy.options && Array.isArray(copy.options)) {
+          copy.options = shuffleArray(copy.options);
+        }
+        return copy;
+      });
       currentIndex = 0;
       answers = questions.map(() => ({ value: "", checked: false, correct: false }));
       showScreen(quizScreen);
@@ -1576,7 +1604,7 @@
       } else {
         feedbackBox.className = "feedback incorrect show";
         feedbackBox.innerHTML = `
-          <strong>Not quite. Try again.</strong>
+          <strong>Not quite. Review the structure and try again.</strong>
           <p>The correct answer is: <strong>${escapeHTML(q.answer)}</strong>.</p>
           <p>${q.explanation}</p>
         `;
